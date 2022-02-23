@@ -1,17 +1,18 @@
 const Express               = require('express') //for RESTFUL API
-const handlebars            = require('express-handlebars') //handlers
-const Express_session       = require('express-session') //for keep logged in 
+const hbs                   = require('express-handlebars') //handlers
+const session               = require('express-session') //for keep logged in 
 const mongoose              = require('mongoose') //mongoDB database
 const passport              = require('passport') //middleware authentication
 const passport_strategy     = require('passport-local').Strategy //simplifies username and password for login
+const bcrypt                = require('bcrypt') //generates hash against the password
 
 const app = Express()
 const port = process.env.port || 3000
 //middlewares
 app.use(Express.urlencoded({extended: false}))
 app.use(Express.static(__dirname + '/public'))
-app.engine('hbs',handlebars({ extname: '.hbs' }))
-app.set('View Engine', 'hbs')
+app.engine('hbs', hbs.engine({extname: '.hbs'}))
+app.set('view engine', 'hbs')
 app.use(session({
     secret: "YES",
     resave: false,
@@ -37,7 +38,8 @@ const schema = new mongoose.Schema({
             required: true
         },
         password: {
-            type: String
+            type: String,
+            required: true
         }
 })
 
@@ -59,5 +61,25 @@ passport.deserializeUser((id,done)=>{
 
 passport.use(new passport_strategy((username,password,done)=>
 {
-    //morning......
+    model.findOne({username: username}, (err,user)=>
+    {
+        if(err) return done(err)
+        if(!user) {return done(null, false, {message: 'Incorrect Username'})}
+
+        bcrypt.compare(password, model.password, (res,err)=>
+        {
+            if(err) return done(err)
+            if(res == false) return done(null, false, {message: 'Password Invalid'})
+            
+            //if there's everything correct, we pass the user
+            return done(null,user)
+        })
+    })
 }))
+
+app.get('/', (req,res)=>
+{
+    res.render('index', {title: "Home"})
+})
+
+app.listen(port, ()=> console.log(`Listening to port ${port}....`))
