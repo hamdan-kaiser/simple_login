@@ -1,0 +1,19 @@
+*{
+    margin: auto;
+    padding: 0%;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: rgb(41, 82, 68);
+    background-image: -moz-repeating-linear-gradient(-moz-repeating-linear-gradient);
+
+}
+
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}

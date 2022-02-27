@@ -25,7 +25,6 @@ app.use(passport.session()) //this will keep logged in even if you refresh
 
 
 //connect to mongoose
-
 mongoose.connect('mongodb://localhost:27017/my_account',{
     useNewUrlParser: true,
     useUnifiedTopology: true
