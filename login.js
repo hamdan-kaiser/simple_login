@@ -80,5 +80,9 @@ app.get('/', (req,res)=>
 {
     res.render('index', {title: "Home"})
 })
+app.get('/login', (req,res)=>
+{
+    res.render('login', {title: "Login"})
+})
 
 app.listen(port, ()=> console.log(`Listening to port ${port}....`))
